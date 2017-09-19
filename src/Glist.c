@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "int_list.h"
+#include "Glist.h"
 
 
 

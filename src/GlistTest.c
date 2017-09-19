@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "int_list.h"
+#include "Glist.h"
 
 int main(int argc, char *argv[])
 {

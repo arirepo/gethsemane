@@ -13,7 +13,7 @@ CC = cc
 INCS    = ../inc
 CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -O3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition 
 LIBS    = 
-LINKFLAGS    = -L$(LIBS) 
+LINKFLAGS    = -L$(LIBS) -I$(INCS)
 LINK_SUFFIX  = 
 # LINK_SUFFIX  =     -llapack -lblas
 # OMP_FLAGS = -fopenmp
@@ -22,7 +22,7 @@ LINK_SUFFIX  =
 #          your test case problem. 
 
 ### objects
-OBJ = int_item.o int_list.o int_list_test.o  
+OBJ = Glist.o GlistTest.o  
 ###
 
 ### compile and link

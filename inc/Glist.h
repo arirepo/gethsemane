@@ -1,7 +1,21 @@
-#ifndef _INT_LIST_
-#define _INT_LIST_
+#ifndef _GLIST_
+#define _GLIST_
 #include <stdlib.h>
-#include "int_item.h"
+
+/*
+Defining the basic integer linked-list datatype 
+*/
+
+struct int_item {
+
+  /* item */
+  int num;
+
+  struct int_item* prv;
+  struct int_item* nxt;
+};
+
+typedef struct int_item Gitem; 
 
 
 /*
