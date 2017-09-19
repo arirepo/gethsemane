@@ -17,14 +17,14 @@ int Glist_init_zero(Glist* lst)
 
 
  
-int Glist_add(Glist* lst, int num)
+int Glist_add(Glist* lst, void *opq)
 {
 
   Gitem *tail = lst->last;
 
   lst->last = (Gitem *) malloc( sizeof(Gitem) );
   if ( lst->last == NULL ) return 1; /* error code */
-  lst->last->num = num;
+  lst->last->opq = opq;
 
   if ( lst->size == 0 ) /* if the list is currently empty */
     {
@@ -44,9 +44,10 @@ int Glist_print(char *name, Glist* lst)
 {
 
   Gitem *ptr = (Gitem *) NULL;
-  printf(" %s = { size = %d, items = ", name, lst->size);
+  printf(" %s = { size = %d, item(s) = ", name, lst->size);
   for(ptr = lst->first; ptr != NULL; ptr = ptr->nxt)
-    printf("%d ", ptr->num);
+    printf("%p, ", (void *)ptr->opq);
+
   printf("}. ");
 
   return 0;
@@ -59,7 +60,11 @@ int Glist_clear(Glist *lst)
   if ( lst->size )
     {
       for(ptr0 = lst->first; (ptr1 = ptr0->nxt) != NULL; ptr0 = ptr1)
-	free(ptr0);
+	{
+	  free(ptr0->opq);
+	  free(ptr0);
+	}
+      free(ptr0->opq);
       free(ptr0);
     }
 
@@ -95,6 +100,7 @@ int Glist_delete(Glist *lst, int indx)
       lst->first = cur->nxt;
     }
 
+  free(cur->opq);
   free(cur); 
   lst->size--;
 

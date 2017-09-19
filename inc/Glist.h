@@ -3,34 +3,35 @@
 #include <stdlib.h>
 
 /*
-Defining the basic integer linked-list datatype 
+Defining the basic linked-list datatype 
 */
 
-struct int_item {
+struct opq_item {
 
   /* item */
-  int num;
+  /* int num; */
+  void *opq;
 
-  struct int_item* prv;
-  struct int_item* nxt;
+  struct opq_item* prv;
+  struct opq_item* nxt;
 };
 
-typedef struct int_item Gitem; 
+typedef struct opq_item Gitem; 
 
 
 /*
-Defining the entire integer linked-list 
+Defining the entire linked-list 
 */
 
-struct int_list {
+struct opq_list {
 
   int size;
   Gitem* first;
   Gitem* last;
 };
 
-/* alias name for int_list structure */ 
-typedef struct int_list Glist;
+/* alias name for opq_list structure */ 
+typedef struct opq_list Glist;
 
 /* init a Glist struct to zero*/
 int Glist_init_zero(Glist* lst);
@@ -40,10 +41,10 @@ int Glist_init_zero(Glist* lst);
 
 
 
-/* adds an integer to the integer list
+/* adds an opaque object to the opaque list
    on success return 0 else return the error code */
 
-int Glist_add(Glist* lst, int num);
+int Glist_add(Glist* lst, void *opq);
 
 /* prints the components of the Glist struct */
 int Glist_print(char *name, Glist* lst);
