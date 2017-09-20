@@ -22,14 +22,19 @@ LINK_SUFFIX  =
 #          your test case problem. 
 
 ### objects
-OBJ = Glist.o GlistTest.o  
+OBJ1 = Gtype.o GtypeTest.o 
+OBJ2 = Gtype.o Glist.o GlistTest.o  
 ###
 
 ### compile and link
-EXE = exe.run
+EXE1 = GtypeTest.run 
+EXE2 = GlistTest.run
 
-all: $(EXE)
-exe.run:  $(OBJ)
-	$(CC)  -o $@ $(LINKFLAGS) $(OBJ) $(LINK_SUFFIX)
+all: $(EXE1) $(EXE2)
+GtypeTest.run:  $(OBJ1)
+	$(CC)  -o $@ $(LINKFLAGS) $(OBJ1) $(LINK_SUFFIX)
+GlistTest.run:  $(OBJ2)
+	$(CC)  -o $@ $(LINKFLAGS) $(OBJ2) $(LINK_SUFFIX)
+
 clean:
-	rm *.run *~ *# $(OBJ)
+	rm *.run *~ *# *.o
