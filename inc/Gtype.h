@@ -2,6 +2,14 @@
 #define _GTYPE_H_
 #include <stdlib.h>
 
+/* basic datatypes used in Gtype */
+enum basic_data_types
+  {
+    _G_INT,
+    _G_FLOAT,
+    _G_DOUBLE,
+  };
+
 /* definition of a generic class datatype */
 
 struct gen_class
@@ -27,6 +35,7 @@ struct gen_class
 };
 
 typedef struct gen_class Gtype;
+typedef enum basic_data_types _G_BASIC;
 
 /* /\* macros *\/ */
 /* #define _GTYPE(typ) Gtype *typ = (Gtype *) malloc( sizeof(Gtype) ); */
@@ -48,6 +57,18 @@ void *GtypeSet(Gtype *inp, void *val, size_t nb);
 /* generic printer; prints the pointer address to the opaque data of the input, i.e. inp
    when the data type is not specified */
 void GtypePrint(Gtype *inp);
+
+/* initializes a Gtype which has a specific basic datatype given by the user 
+   the datatype must be selected from _G_BASIC enum by user */
+int GtypeInitBasic(Gtype **inp, _G_BASIC typ);
+
+
+int *GtypeGetInt(Gtype *inp);
+void GtypePrintInt(Gtype *inp);
+float *GtypeGetFloat(Gtype *inp);
+void GtypePrintFloat(Gtype *inp);
+double *GtypeGetDouble(Gtype *inp);
+void GtypePrintDouble(Gtype *inp);
 
 #endif
 

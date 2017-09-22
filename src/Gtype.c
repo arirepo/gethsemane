@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Gtype.h"
+#include "Genv.h"
 
 int GtypeInit(Gtype **inp, size_t nb)
 {
@@ -70,5 +71,98 @@ void GtypePrint(Gtype *inp)
 {
 
   printf(" [%p] ", (void *)inp->opq);
+
+}
+
+int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
+{
+
+  *inp = (Gtype *)malloc(sizeof(Gtype));
+
+  switch (typ)
+    {
+    case     _G_INT:
+ 
+      (*inp)->opq = (int *)malloc(sizeof(int));
+
+      /* setup foundation functions */
+      (*inp)->get = GtypeGetInt;
+      (*inp)->print = GtypePrintInt;
+
+      break;
+    case     _G_FLOAT:
+ 
+      (*inp)->opq = (float *)malloc(sizeof(float));
+
+      /* setup foundation functions */
+      (*inp)->get = GtypeGetFloat;
+      (*inp)->print = GtypePrintFloat;
+
+      break;
+    case     _G_DOUBLE:
+ 
+      (*inp)->opq = (double *)malloc(sizeof(double));
+
+      /* setup foundation functions */
+      (*inp)->get = GtypeGetDouble;
+      (*inp)->print = GtypePrintDouble;
+
+      break;
+
+    default:
+      GERROR("\n Unknown basic data type! \n");
+    }
+
+  /* the following are the same for all instances */
+  (*inp)->nested = 0;
+  (*inp)->del = GtypeDel;
+  (*inp)->set = GtypeSet;
+
+  /* setup  all other methods */
+  (*inp)->vtable = NULL;
+
+  return 0;
+
+}
+
+int *GtypeGetInt(Gtype *inp)
+{
+
+  return (int*)inp->opq;
+
+}
+
+void GtypePrintInt(Gtype *inp)
+{
+
+  printf(" %d ", *(int *)inp->opq);
+
+}
+
+float *GtypeGetFloat(Gtype *inp)
+{
+
+  return (float*)inp->opq;
+
+}
+
+void GtypePrintFloat(Gtype *inp)
+{
+
+  printf(" %f ", *(float *)inp->opq);
+
+}
+
+double *GtypeGetDouble(Gtype *inp)
+{
+
+  return (double*)inp->opq;
+
+}
+
+void GtypePrintDouble(Gtype *inp)
+{
+
+  printf(" %16.16f ", *(double *)inp->opq);
 
 }
