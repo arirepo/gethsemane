@@ -6,10 +6,10 @@ int main(int argc, char *argv[])
 {
 
   int ii;
-  _GTYPE(inp);
+  /* _GTYPE(inp); */
+  Gtype *inp;
 
-
-  GtypeInit(inp, sizeof(int));
+  GtypeInit(&inp, sizeof(int));
   for ( ii = 0; ii < 1000; ii++)
     {
       inp->set(inp, &ii, sizeof(int));

@@ -1,15 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "Gtype.h"
 #include "Glist.h"
 
 
 
-int Glist_init_zero(Glist* lst)
+int GlistInit(Glist** lst)
 {
 
-  lst->size = 0;
-  lst->first = (Gitem *)NULL;
-  lst->last =  (Gitem *)NULL;
+  *lst = (Glist *)malloc(sizeof(Glist));
+
+  /*initializing the data */
+  (*lst)->size = 0;
+  (*lst)->first = (Gitem *)NULL;
+  (*lst)->last =  (Gitem *)NULL;
+
+
+  /*initializing the methods */
+  (*lst)->add = GlistAdd;
+  (*lst)->print = GlistPrint;
+  (*lst)->del = GlistClear;
+  (*lst)->erase = GlistDel;
 
   return 0;
 
@@ -17,13 +28,14 @@ int Glist_init_zero(Glist* lst)
 
 
  
-int Glist_add(Glist* lst, void *opq)
+int GlistAdd(Glist* lst, Gtype *opq)
 {
 
   Gitem *tail = lst->last;
 
   lst->last = (Gitem *) malloc( sizeof(Gitem) );
   if ( lst->last == NULL ) return 1; /* error code */
+
   lst->last->opq = opq;
 
   if ( lst->size == 0 ) /* if the list is currently empty */
@@ -40,31 +52,35 @@ int Glist_add(Glist* lst, void *opq)
   return 0;
 }
 
-int Glist_print(char *name, Glist* lst)
+void GlistPrint(Glist* lst)
 {
 
-  Gitem *ptr = (Gitem *) NULL;
-  printf(" %s = { size = %d, item(s) = ", name, lst->size);
-  for(ptr = lst->first; ptr != NULL; ptr = ptr->nxt)
-    printf("%p, ", (void *)ptr->opq);
+  int itr;
+  Gtype* gtp;
+  Gitem *ptr;
 
-  printf("}. ");
-
-  return 0;
+  printf(" { ");
+  itr = lst->size;
+  for(ptr = lst->first; itr-- > 0; ptr = ptr->nxt)
+    {
+      gtp = (Gtype *)ptr->opq;
+      gtp->print(gtp);
+    }
+  printf(" } ");
 
 }
 
-int Glist_clear(Glist *lst)
+int GlistClear(Glist *lst)
 {
   Gitem *ptr0 = NULL, *ptr1 = NULL;
   if ( lst->size )
     {
       for(ptr0 = lst->first; (ptr1 = ptr0->nxt) != NULL; ptr0 = ptr1)
 	{
-	  free(ptr0->opq);
+	  ptr0->opq->del(ptr0->opq);
 	  free(ptr0);
 	}
-      free(ptr0->opq);
+      ptr0->opq->del(ptr0->opq);
       free(ptr0);
     }
 
@@ -73,9 +89,10 @@ int Glist_clear(Glist *lst)
   return 0;
 }
 
-int Glist_delete(Glist *lst, int indx)
+int GlistDel(Glist *lst, int indx)
 {
   int i;
+  Gtype *tGtype = NULL;
   Gitem *cur = lst->first;
 
   for ( i = 0; i < indx; i++)
@@ -100,7 +117,9 @@ int Glist_delete(Glist *lst, int indx)
       lst->first = cur->nxt;
     }
 
-  free(cur->opq);
+  tGtype = (Gtype *)cur->opq;
+  tGtype->del(tGtype);
+
   free(cur); 
   lst->size--;
 

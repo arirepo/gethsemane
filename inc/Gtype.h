@@ -17,6 +17,7 @@ struct gen_class
   void* (*get)(struct gen_class *);
   int   (*del)(struct gen_class *);
   void* (*set)(struct gen_class *, void *, size_t);
+  void (*print)(struct gen_class *);
 
   /* vtable - array of (void *) pointers to user-defined methods*/
   /*                object holder     arguments                 */
@@ -27,13 +28,13 @@ struct gen_class
 
 typedef struct gen_class Gtype;
 
-/* macros */
-#define _GTYPE(typ) Gtype *typ = (Gtype *) malloc( sizeof(Gtype) );
+/* /\* macros *\/ */
+/* #define _GTYPE(typ) Gtype *typ = (Gtype *) malloc( sizeof(Gtype) ); */
 
 /* functions */
 
 /* initializes a non-nested object */
-int GtypeInit(Gtype *inp, size_t nb);
+int GtypeInit(Gtype **inp, size_t nb);
 
 /* a generic get operator */
 void *GtypeGet(Gtype *inp);
@@ -44,6 +45,9 @@ int GtypeDel(Gtype *inp);
 /* set an arbitrary given value at the opaque pointer of the current object */
 void *GtypeSet(Gtype *inp, void *val, size_t nb);
 
+/* generic printer; prints the pointer address to the opaque data of the input, i.e. inp
+   when the data type is not specified */
+void GtypePrint(Gtype *inp);
 
 #endif
 

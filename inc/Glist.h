@@ -1,6 +1,7 @@
 #ifndef _GLIST_
 #define _GLIST_
 #include <stdlib.h>
+#include "Gtype.h"
 
 /*
 Defining the basic linked-list datatype 
@@ -10,7 +11,7 @@ struct opq_item {
 
   /* item */
   /* int num; */
-  void *opq;
+  Gtype *opq;
 
   struct opq_item* prv;
   struct opq_item* nxt;
@@ -28,32 +29,38 @@ struct opq_list {
   int size;
   Gitem* first;
   Gitem* last;
+
+  /* methods */
+  int (*add)(struct opq_list* , Gtype *);
+  void (*print)(struct opq_list*);
+  int (*del)(struct opq_list* );
+  int (*erase)(struct opq_list *, int);
+
 };
 
 /* alias name for opq_list structure */ 
 typedef struct opq_list Glist;
 
+
+/* /\* macros *\/ */
+/* #define _GLIST(lst) Glist *lst = (Glist *) malloc( sizeof(Glist) ); */
+
 /* init a Glist struct to zero*/
-int Glist_init_zero(Glist* lst);
-
-/* macros */
-#define _GLIST(lst) Glist *lst = (Glist *) malloc( sizeof(Glist) );
-
+int GlistInit(Glist** lst);
 
 
 /* adds an opaque object to the opaque list
    on success return 0 else return the error code */
-
-int Glist_add(Glist* lst, void *opq);
+int GlistAdd(Glist* lst, Gtype *opq);
 
 /* prints the components of the Glist struct */
-int Glist_print(char *name, Glist* lst);
+void GlistPrint(Glist* lst);
 
 /* cleans up the entire memory dedicated to the list */ 
-int Glist_clear(Glist *lst);
+int GlistClear(Glist *lst);
 
 /* deletes specific item located at the indx'th location (zero-based)
    in the Glist */
-int Glist_delete(Glist *lst, int indx);
+int GlistDel(Glist *lst, int indx);
 
 #endif

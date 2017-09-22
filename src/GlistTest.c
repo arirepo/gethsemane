@@ -1,44 +1,47 @@
 #include <stdio.h>
+#include "Gtype.h"
 #include "Glist.h"
 
-struct dummy_int
-{
-  int value;
-  double value2;
-};
-
-/* typedef int Dint; */
-typedef double Dint;
-/* typedef struct dummy_int Dint; */
 
 
 int main(int argc, char *argv[])
 {
 
-  int ii; 
-  Dint *aDint = NULL;
-  _GLIST(lst);
+  int ii;
+  /* _GTYPE(inp); */
+  /* _GTYPE(inp2); */
+  /* _GLIST(lst); */
+  Gtype *inp, *inp2;
+  Glist *lst;
+
+  GtypeInit(&inp, sizeof(int));
+  GtypeInit(&inp2, sizeof(int));
+  GlistInit(&lst);
 
 
-  Glist_init_zero(lst);
+  /* for( ii= 0; ii < 100000; ii++) */
+  /*   { */
+  ii = 4;
+  inp->set(inp, &ii, sizeof(int));
+  ii = 5;
+  inp->set(inp2, &ii, sizeof(int));
 
+  lst->add(lst, inp);
+  lst->add(lst, inp2);
 
-  for( ii= 0; ii < 100000; ii++)
-    {
-      aDint = (Dint *)malloc(sizeof(Dint));
-      Glist_add(lst, (void *)aDint);
-    }
+    /* } */
 
-  for( ii= 0; ii < 100000; ii++)
-    Glist_delete(lst, 0);
+  /* for( ii= 0; ii < 100000; ii++) */
+  /* lst->erase(lst, 0); */
+
+  GlistPrint(lst);
 
 
   printf("\n argc = %d \n", argc);
   printf("argv[0] = %s \n" , argv[0]);
 
-  Glist_print("lst = ", lst);
 
-  Glist_clear(lst);
+  lst->del(lst);
 
   return 0;
 }
