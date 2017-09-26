@@ -7,7 +7,7 @@ enum basic_data_types
   {
     _G_INT,
     _G_FLOAT,
-    _G_DOUBLE,
+    _G_DOUBLE
   };
 
 /* definition of a generic class datatype */
@@ -26,6 +26,8 @@ struct gen_class
   int   (*del)(struct gen_class *);
   void* (*set)(struct gen_class *, void *, size_t);
   void (*print)(struct gen_class *);
+  long double (*rank)(struct gen_class *);
+
 
   /* vtable - array of (void *) pointers to user-defined methods*/
   /*                object holder     arguments                 */
@@ -69,6 +71,11 @@ float *GtypeGetFloat(Gtype *inp);
 void GtypePrintFloat(Gtype *inp);
 double *GtypeGetDouble(Gtype *inp);
 void GtypePrintDouble(Gtype *inp);
+
+long double GtypeRank(Gtype *inp);
+long double GtypeRankInt(Gtype *inp);
+long double GtypeRankFloat(Gtype *inp);
+long double GtypeRankDouble(Gtype *inp);
 
 #endif
 

@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
   /* _GLIST(lst); */
   Gtype *inp, *inp2, *inp3, *inp4, *inp5;
   Glist *lst;
+  Gtype *tGtype;
 
   GtypeInit(&inp, sizeof(int));
   GtypeInit(&inp2, sizeof(int));
@@ -56,6 +57,14 @@ int main(int argc, char *argv[])
 
   GlistPrint(lst);
 
+  Gsort(lst->itrs, lst->size);
+
+  for ( ii = 0; ii < lst->size; ii++)
+    {
+      tGtype = (Gtype *)lst->itrs[ii]->opq; 
+      tGtype->print(tGtype);
+      printf(" *%f* ", (double)tGtype->rank(tGtype));
+    }
 
   printf("\n argc = %d \n", argc);
   printf("argv[0] = %s \n" , argv[0]);

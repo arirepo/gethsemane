@@ -29,6 +29,12 @@ struct opq_list {
   int size;
   Gitem* first;
   Gitem* last;
+  /* C++ style iterators for direct access to the list elements*/
+  Gitem** itrs;
+#ifndef _DEFAULT_ITRS_SIZE_
+#define _DEFAULT_ITRS_SIZE_ 100
+#endif
+  int itrs_buff_size;
 
   /* methods */
   int (*add)(struct opq_list* , Gtype *);
@@ -62,5 +68,9 @@ int GlistClear(Glist *lst);
 /* deletes specific item located at the indx'th location (zero-based)
    in the Glist */
 int GlistDel(Glist *lst, int indx);
+
+/* sorts a Glist using the value provided by ->get() method
+   implements a quicksort algorithm and sorts the iterators table*/
+void Gsort(Gitem **A, int len);
 
 #endif

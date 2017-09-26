@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "Gtype.h"
 #include "Glist.h"
-
+#include "Genv.h"
 
 
 int GlistInit(Glist** lst)
@@ -15,6 +16,8 @@ int GlistInit(Glist** lst)
   (*lst)->first = (Gitem *)NULL;
   (*lst)->last =  (Gitem *)NULL;
 
+  (*lst)->itrs = (Gitem **)malloc(_DEFAULT_ITRS_SIZE_*sizeof(Gitem *));
+  (*lst)->itrs_buff_size = _DEFAULT_ITRS_SIZE_;
 
   /*initializing the methods */
   (*lst)->add = GlistAdd;
@@ -49,6 +52,17 @@ int GlistAdd(Glist* lst, Gtype *opq)
       lst->last->prv = tail;
       lst->size++;
     }
+
+  /* updating iterator table */
+  if ( lst->size > lst->itrs_buff_size )
+    if ( (lst->itrs 
+	  = (Gitem **)realloc(lst->itrs
+			     , (lst->itrs_buff_size += _DEFAULT_ITRS_SIZE_)*sizeof(Gitem *)))
+	 == NULL)
+      GERROR("Can't increase buffer size of the iterators table");
+
+  lst->itrs[lst->size-1] = lst->last;
+
   return 0;
 }
 
@@ -84,6 +98,7 @@ int GlistClear(Glist *lst)
       free(ptr0);
     }
 
+  free(lst->itrs);
   free(lst);
 
   return 0;
@@ -116,7 +131,18 @@ int GlistDel(Glist *lst, int indx)
       cur->nxt->prv = NULL;
       lst->first = cur->nxt;
     }
-
+  /* updating iterators table by shifting the addresses the left*/
+  for( i=indx; i < lst->size; i++)
+    lst->itrs[i] = lst->itrs[i+1];
+  /* reduce the size of iterators table if too big */
+  if ( (lst->size - lst->itrs_buff_size) > lst->itrs_buff_size )
+    if ( (lst->itrs 
+	  = (Gitem **)realloc(lst->itrs
+			     , (lst->itrs_buff_size -= _DEFAULT_ITRS_SIZE_)*sizeof(Gitem *)))
+	 == NULL)
+      GERROR("Can't decrease buffer size of the iterators table");
+ 
+  /* cleaning up the deleted element */
   tGtype = (Gtype *)cur->opq;
   tGtype->del(tGtype);
 
@@ -126,3 +152,30 @@ int GlistDel(Glist *lst, int indx)
   return 0;
 }
 
+void Gsort(Gitem **A, int len)
+{
+  int piv;
+  int i, j;
+  Gitem *tmp;
+
+  if (len < 2) return;
+ 
+  piv = len / 2;
+ 
+  for (i = 0, j = len - 1; ; i++, j--) 
+    {
+      while (A[i]->opq->rank(A[i]->opq) < A[piv]->opq->rank(A[piv]->opq)) i++;
+      while (A[j]->opq->rank(A[j]->opq) > A[piv]->opq->rank(A[piv]->opq)) j--;
+ 
+      if (i >= j) break;
+ 
+      tmp = A[i];
+      A[i] = A[j];
+      A[j] =  tmp;
+
+    }
+ 
+  Gsort(A, i);
+  Gsort((Gitem ** )(A + i), (len - i));
+
+}

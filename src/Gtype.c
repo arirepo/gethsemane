@@ -20,6 +20,7 @@ int GtypeInit(Gtype **inp, size_t nb)
   (*inp)->del = GtypeDel;
   (*inp)->set = GtypeSet;
   (*inp)->print = GtypePrint;
+  (*inp)->rank = GtypeRank;
 
   /* setup  all other methods */
   (*inp)->vtable = NULL;
@@ -53,6 +54,7 @@ int GtypeDel(Gtype *inp)
       inp->get = NULL;
       inp->del = NULL;
       inp->vtable = NULL;
+      inp->rank = NULL;
 
       free(inp);
     }
@@ -88,6 +90,7 @@ int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
       /* setup foundation functions */
       (*inp)->get = GtypeGetInt;
       (*inp)->print = GtypePrintInt;
+      (*inp)->rank = GtypeRankInt;
 
       break;
     case     _G_FLOAT:
@@ -97,6 +100,7 @@ int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
       /* setup foundation functions */
       (*inp)->get = GtypeGetFloat;
       (*inp)->print = GtypePrintFloat;
+      (*inp)->rank = GtypeRankFloat;
 
       break;
     case     _G_DOUBLE:
@@ -106,6 +110,7 @@ int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
       /* setup foundation functions */
       (*inp)->get = GtypeGetDouble;
       (*inp)->print = GtypePrintDouble;
+      (*inp)->rank = GtypeRankDouble;
 
       break;
 
@@ -164,5 +169,40 @@ void GtypePrintDouble(Gtype *inp)
 {
 
   printf(" %16.16f ", *(double *)inp->opq);
+
+}
+
+
+long double GtypeRank(Gtype *inp)
+{
+
+  return *(long double*)inp->opq;
+
+}
+
+long double GtypeRankInt(Gtype *inp)
+{
+
+  int tmp;
+  tmp = *(int *)inp->opq;
+  return (long double)tmp;
+
+}
+
+long double GtypeRankFloat(Gtype *inp)
+{
+
+  float tmp;
+  tmp = *(float *)inp->opq;
+  return (long double)tmp;
+
+}
+
+long double GtypeRankDouble(Gtype *inp)
+{
+
+  double tmp;
+  tmp = *(double *)inp->opq;
+  return (long double)tmp;
 
 }
