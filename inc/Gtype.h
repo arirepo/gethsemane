@@ -3,12 +3,13 @@
 #include <stdlib.h>
 
 /* basic datatypes used in Gtype */
-enum basic_data_types
+enum gtype_type
   {
-    _G_INT,
-    _G_FLOAT,
-    _G_DOUBLE
+    _GTYPE_INT,
+    _GTYPE_FLOAT,
+    _GTYPE_DOUBLE
   };
+typedef enum gtype_type _GTYPE_TYPE;
 
 /* definition of a generic class datatype */
 
@@ -16,10 +17,6 @@ struct gen_class
 {
   /* data part */
   void *opq;
-  /* is zero if the object only contains primitive types
-     and is nonzero if the opaque pointer in the object points to another
-     object of gen_class */ 
-  short nested;
 
   /* foundation methods */
   void* (*get)(struct gen_class *);
@@ -37,7 +34,6 @@ struct gen_class
 };
 
 typedef struct gen_class Gtype;
-typedef enum basic_data_types _G_BASIC;
 
 /* /\* macros *\/ */
 /* #define _GTYPE(typ) Gtype *typ = (Gtype *) malloc( sizeof(Gtype) ); */
@@ -61,8 +57,8 @@ void *GtypeSet(Gtype *inp, void *val, size_t nb);
 void GtypePrint(Gtype *inp);
 
 /* initializes a Gtype which has a specific basic datatype given by the user 
-   the datatype must be selected from _G_BASIC enum by user */
-int GtypeInitBasic(Gtype **inp, _G_BASIC typ);
+   the datatype must be selected from _GTYPE_TYPE enum by user */
+int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ);
 
 
 int *GtypeGetInt(Gtype *inp);

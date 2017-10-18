@@ -20,11 +20,11 @@ int main(int argc, char *argv[])
 
   GtypeInit(&inp, sizeof(int));
   GtypeInit(&inp2, sizeof(int));
-  GtypeInitBasic(&inp3, _G_INT);
-  GtypeInitBasic(&inp4, _G_FLOAT);
-  GtypeInitBasic(&inp5, _G_DOUBLE);
+  GtypeInitBasic(&inp3, _GTYPE_INT);
+  GtypeInitBasic(&inp4, _GTYPE_FLOAT);
+  GtypeInitBasic(&inp5, _GTYPE_DOUBLE);
 
-  GlistInit(&lst);
+  GlistInit(&lst, NULL);
 
 
   /* for( ii= 0; ii < 100000; ii++) */
@@ -42,29 +42,21 @@ int main(int argc, char *argv[])
   dval = -1.28783487845;
   inp5->set(inp5, &dval, sizeof(double));
 
-  lst->add(lst, inp);
-  lst->add(lst, inp3);
-  lst->add(lst, inp5);
-  lst->add(lst, inp2);
-  lst->add(lst, inp4);
+  lst->add(lst, inp, _GLIST_LEAF, NULL);
+  lst->add(lst, inp3, _GLIST_LEAF, NULL);
+  lst->add(lst, inp5, _GLIST_LEAF, NULL);
+  lst->add(lst, inp2, _GLIST_LEAF, NULL);
+  lst->add(lst, inp4, _GLIST_LEAF, NULL);
 
 
 
-    /* } */
-
-  /* for( ii= 0; ii < 100000; ii++) */
   lst->erase(lst, 0);
 
-  GlistPrint(lst);
+  lst->print(lst);
 
-  Gsort(lst->itrs, lst->size);
+  GlistSort(lst->itrs, lst->size);
 
-  for ( ii = 0; ii < lst->size; ii++)
-    {
-      tGtype = (Gtype *)lst->itrs[ii]->opq; 
-      tGtype->print(tGtype);
-      printf(" *%f* ", (double)tGtype->rank(tGtype));
-    }
+  GlistPrintItrs(lst);
 
   printf("\n argc = %d \n", argc);
   printf("argv[0] = %s \n" , argv[0]);

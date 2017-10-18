@@ -6,7 +6,7 @@
 #include "Genv.h"
 
 
-int GlistInit(Glist** lst)
+int GlistInit(Glist** lst, void *top)
 {
 
   *lst = (Glist *)malloc(sizeof(Glist));
@@ -19,11 +19,15 @@ int GlistInit(Glist** lst)
   (*lst)->itrs = (Gitem **)malloc(_DEFAULT_ITRS_SIZE_*sizeof(Gitem *));
   (*lst)->itrs_buff_size = _DEFAULT_ITRS_SIZE_;
 
+  /* setup the top Glist ; if any ... */
+  (*lst)->top = top;
+
   /*initializing the methods */
   (*lst)->add = GlistAdd;
   (*lst)->print = GlistPrint;
-  (*lst)->del = GlistClear;
-  (*lst)->erase = GlistDel;
+  (*lst)->del = GlistDelete;
+  (*lst)->erase = GlistErase;
+  (*lst)->rank = GlistRank;
 
   return 0;
 
@@ -31,15 +35,26 @@ int GlistInit(Glist** lst)
 
 
  
-int GlistAdd(Glist* lst, Gtype *opq)
+int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, void *tag)
 {
 
-  Gitem *tail = lst->last;
+  Gitem *tail;
+  Glist *gls;
 
+  tail = lst->last;
   lst->last = (Gitem *) malloc( sizeof(Gitem) );
   if ( lst->last == NULL ) return 1; /* error code */
 
+  lst->last->top = (void *)lst;
+  if ( type == _GLIST_BRANCH )
+    {
+      gls = (Glist *)opq;
+      gls->top = (void *)lst->last;
+    }
+
+  lst->last->type = type;
   lst->last->opq = opq;
+  lst->last->tag = tag;
 
   if ( lst->size == 0 ) /* if the list is currently empty */
     {
@@ -72,44 +87,69 @@ void GlistPrint(Glist* lst)
   int itr;
   Gtype* gtp;
   Gitem *ptr;
+  Glist* gls;
 
   printf(" { ");
   itr = lst->size;
   for(ptr = lst->first; itr-- > 0; ptr = ptr->nxt)
     {
-      gtp = (Gtype *)ptr->opq;
-      gtp->print(gtp);
+      /* printing the tag ; if any ... */
+      if ( (gls = (Glist *)ptr->tag) != NULL)
+	{
+	  printf(" tag = ");
+	  gls->print(gls);
+	  printf(" , ");
+	}
+
+      if ( ptr->type == _GLIST_LEAF) /* then there is a Gtype here ... */
+	{
+	  gtp = (Gtype *)ptr->opq;
+	  gtp->print(gtp);
+	}
+      else /* then there is a Glist here ... */
+	{
+	  gls = (Glist *)ptr->opq;
+	  gls->print(gls);
+	}
     }
   printf(" } ");
 
 }
 
-int GlistClear(Glist *lst)
+int GlistDelete(Glist *lst)
 {
-  Gitem *ptr0 = NULL, *ptr1 = NULL;
+  Gitem *ptr0, *ptr1;
+  Glist *gls;
+  Gtype *gtp;
+
   if ( lst->size )
     {
-      for(ptr0 = lst->first; (ptr1 = ptr0->nxt) != NULL; ptr0 = ptr1)
-	{
-	  ptr0->opq->del(ptr0->opq);
-	  free(ptr0);
-	}
-      ptr0->opq->del(ptr0->opq);
-      free(ptr0);
+      ptr0 = lst->first;
+      do{
+
+	  ptr1 = ptr0;
+	  GitemDelete(ptr0);
+
+	} while ( (ptr0 = ptr1->nxt) != NULL );
+
     }
 
-  free(lst->itrs);
+  if ( lst->itrs != NULL )
+    free(lst->itrs);
+
   free(lst);
 
   return 0;
 }
 
-int GlistDel(Glist *lst, int indx)
+int GlistErase(Glist *lst, int indx)
 {
   int i;
-  Gtype *tGtype = NULL;
-  Gitem *cur = lst->first;
+  Gtype *tGtype;
+  Gitem *cur;
+  Glist *gls;
 
+  cur = lst->first;
   for ( i = 0; i < indx; i++)
     cur = cur->nxt;
 
@@ -143,20 +183,19 @@ int GlistDel(Glist *lst, int indx)
       GERROR("Can't decrease buffer size of the iterators table");
  
   /* cleaning up the deleted element */
-  tGtype = (Gtype *)cur->opq;
-  tGtype->del(tGtype);
+  GitemDelete(cur);
 
-  free(cur); 
   lst->size--;
 
   return 0;
 }
 
-void Gsort(Gitem **A, int len)
+void GlistSort(Gitem **A, int len)
 {
   int piv;
   int i, j;
   Gitem *tmp;
+
 
   if (len < 2) return;
  
@@ -164,8 +203,21 @@ void Gsort(Gitem **A, int len)
  
   for (i = 0, j = len - 1; ; i++, j--) 
     {
-      while (A[i]->opq->rank(A[i]->opq) < A[piv]->opq->rank(A[piv]->opq)) i++;
-      while (A[j]->opq->rank(A[j]->opq) > A[piv]->opq->rank(A[piv]->opq)) j--;
+
+      if (A[i]->type == _GLIST_LEAF)
+	while ( ((Gtype *)A[i]->opq)->rank((Gtype *)A[i]->opq) 
+		< ((Gtype *)A[piv]->opq)->rank((Gtype *)A[piv]->opq)) i++;
+      else
+	while ( ((Glist *)A[i]->opq)->rank((Glist *)A[i]->opq) 
+		< ((Glist *)A[piv]->opq)->rank((Glist *)A[piv]->opq)) i++;
+
+      if( A[j]->type == _GLIST_LEAF)
+	while (((Gtype *)A[j]->opq)->rank((Gtype *)A[j]->opq) 
+	       > ((Gtype *)A[piv]->opq)->rank((Gtype *)A[piv]->opq)) j--;
+      else
+	while (((Glist *)A[j]->opq)->rank((Glist *)A[j]->opq) 
+	       > ((Glist *)A[piv]->opq)->rank((Glist *)A[piv]->opq)) j--;
+
  
       if (i >= j) break;
  
@@ -175,7 +227,76 @@ void Gsort(Gitem **A, int len)
 
     }
  
-  Gsort(A, i);
-  Gsort((Gitem ** )(A + i), (len - i));
+  GlistSort(A, i);
+  GlistSort((Gitem ** )(A + i), (len - i));
+
+}
+
+void GitemDelete(Gitem *git)
+{
+
+  Gtype *gtp;
+  Glist *gls;
+
+  if ( git->tag != NULL)
+    {
+      gls = (Glist *)git->tag;
+      gls->del(gls);
+    }
+
+  if ( git->type == _GLIST_LEAF )
+    {
+      gtp = (Gtype *)git->opq;
+      gtp->del(gtp);
+    }
+  else
+    {
+      gls = (Glist *)git->opq;
+      gls->del(gls);
+    }
+
+
+  free(git);
+
+}
+
+long double GlistRank(Glist *lst)
+{
+  return (long double)0.;
+}
+
+void GlistPrintItrs(Glist* lst)
+{
+
+  int itr;
+  Gtype* gtp;
+  Gitem *ptr;
+  Glist* gls;
+
+  printf(" { ");
+  for(itr = 0; itr < lst->size; itr++)
+    {
+      ptr = lst->itrs[itr];
+
+      /* printing the tag ; if any ... */
+      if ( (gls = (Glist *)ptr->tag) != NULL)
+	{
+	  printf(" tag = ");
+	  gls->print(gls);
+	  printf(" , ");
+	}
+
+      if ( ptr->type == _GLIST_LEAF) /* then there is a Gtype here ... */
+	{
+	  gtp = (Gtype *)ptr->opq;
+	  gtp->print(gtp);
+	}
+      else /* then there is a Glist here ... */
+	{
+	  gls = (Glist *)ptr->opq;
+	  gls->print(gls);
+	}
+    }
+  printf(" } ");
 
 }

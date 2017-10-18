@@ -13,7 +13,6 @@ int GtypeInit(Gtype **inp, size_t nb)
 
   if ( (*inp)->opq == NULL ) return 1;
 
-  (*inp)->nested = 0;
 
   /* setup foundation functions */
   (*inp)->get = GtypeGet;
@@ -39,25 +38,16 @@ void *GtypeGet(Gtype *inp)
 
 int GtypeDel(Gtype *inp)
 {
-  Gtype *sub = NULL;
 
-  if (inp->nested)
-    {
-      sub = (Gtype *)inp->opq;
-      sub->del(sub);
-    }
-  else
-    {
-      free(inp->opq);
-      inp->nested = 0;
+  free(inp->opq);
 
-      inp->get = NULL;
-      inp->del = NULL;
-      inp->vtable = NULL;
-      inp->rank = NULL;
+  inp->get = NULL;
+  inp->del = NULL;
+  inp->vtable = NULL;
+  inp->rank = NULL;
 
-      free(inp);
-    }
+  free(inp);
+    
 
   return 0;
 }
@@ -76,14 +66,14 @@ void GtypePrint(Gtype *inp)
 
 }
 
-int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
+int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ)
 {
 
   *inp = (Gtype *)malloc(sizeof(Gtype));
 
   switch (typ)
     {
-    case     _G_INT:
+    case     _GTYPE_INT:
  
       (*inp)->opq = (int *)malloc(sizeof(int));
 
@@ -93,7 +83,7 @@ int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
       (*inp)->rank = GtypeRankInt;
 
       break;
-    case     _G_FLOAT:
+    case     _GTYPE_FLOAT:
  
       (*inp)->opq = (float *)malloc(sizeof(float));
 
@@ -103,7 +93,7 @@ int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
       (*inp)->rank = GtypeRankFloat;
 
       break;
-    case     _G_DOUBLE:
+    case     _GTYPE_DOUBLE:
  
       (*inp)->opq = (double *)malloc(sizeof(double));
 
@@ -119,7 +109,6 @@ int GtypeInitBasic(Gtype **inp, _G_BASIC typ)
     }
 
   /* the following are the same for all instances */
-  (*inp)->nested = 0;
   (*inp)->del = GtypeDel;
   (*inp)->set = GtypeSet;
 

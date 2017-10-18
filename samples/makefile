@@ -23,18 +23,22 @@ LINK_SUFFIX  =
 
 ### objects
 OBJ1 = Gtype.o GtypeTest.o 
-OBJ2 = Gtype.o Glist.o GlistTest.o  
+OBJ2 = Gtype.o Glist.o GlistTest.o
+OBJ3 = Gtype.o Glist.o Greorder.o GreorderTest.o
 ###
 
 ### compile and link
 EXE1 = GtypeTest.run 
 EXE2 = GlistTest.run
+EXE3 = GreorderTest.run
 
-all: $(EXE1) $(EXE2)
+all: $(EXE1) $(EXE2) $(EXE3)
 GtypeTest.run:  $(OBJ1)
 	$(CC)  -o $@ $(LINKFLAGS) $(OBJ1) $(LINK_SUFFIX)
 GlistTest.run:  $(OBJ2)
 	$(CC)  -o $@ $(LINKFLAGS) $(OBJ2) $(LINK_SUFFIX)
+GreorderTest.run:  $(OBJ3)
+	$(CC)  -o $@ $(LINKFLAGS) $(OBJ3) $(LINK_SUFFIX)
 
 clean:
 	rm *.run *~ *# *.o
