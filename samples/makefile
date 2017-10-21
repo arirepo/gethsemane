@@ -11,7 +11,8 @@ VPATH = ./:../src:
 CC = cc
 # CC = icc
 INCS    = ../inc
-CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -O3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition -DDEBUG_VERBOSE 
+# IS_DEBUG = -DDEBUG_VERBOSE
+CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -O3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition $(IS_DEBUG) 
 LIBS    = 
 LINKFLAGS    = -L$(LIBS) -I$(INCS)
 LINK_SUFFIX  = 

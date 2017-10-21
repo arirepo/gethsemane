@@ -24,7 +24,7 @@ int GlistInit(Glist** lst, void *top)
 
   /*initializing the methods */
   (*lst)->add = GlistAdd;
-  (*lst)->print = GlistPrint;
+  (*lst)->print = GlistPrintItrs;
   (*lst)->del = GlistDelete;
   (*lst)->erase = GlistErase;
   (*lst)->rank = GlistRank;
@@ -273,7 +273,14 @@ void GitemDelete(Gitem *git)
 
 long double GlistRank(Glist *lst)
 {
-  return (long double)0.;
+  /* return (long double)0.; */
+  long double rank;
+  Gitem *itr;
+
+  for( rank = 0., itr = lst->first; itr != NULL; itr = itr->nxt)
+    rank += ( ( itr->type == _GLIST_LEAF)?1.:GlistRank((Glist *)itr->opq) );
+
+  return rank; 
 }
 
 void GlistPrintItrs(Glist* lst)

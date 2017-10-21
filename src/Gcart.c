@@ -31,62 +31,25 @@ int GcartGraph2d(Glist *lst, int nx, int ny)
 	/* get hold on the current node ... */
 	gls = (Glist *)(lst->itrs[ii])->opq;
 
-	/* determine the neighbors and create the connectivity */
-	/* INTERIOR of the Cartesian region */
-	if ( (i > 0) && ( j > 0) && ( i < (nx-1)) && (j < (ny-1)) )
-	  {
-	    /* generate possible neighbors using Cartesian rule*/
-	    for ( k = 0; k < 4; k++)
-	      GtypeInitBasic(&neigh[k], _GTYPE_INT);
+	/* generate possible neighbors using Cartesian rule*/
+	for ( k = 0; k < 4; k++)
+	  GtypeInitBasic(&neigh[k], _GTYPE_INT);
 
-	    vall = ii + 1;
-	    neigh[0]->set(neigh[0], &vall, sizeof(int));
-	    vall = ii + nx;
-	    neigh[1]->set(neigh[1], &vall, sizeof(int));
-	    vall = ii - 1;
-	    neigh[2]->set(neigh[2], &vall, sizeof(int));
-	    vall = ii - nx;
-	    neigh[3]->set(neigh[3], &vall, sizeof(int));
+	vall = (i == (nx-1) )?(-1):(ii + 1);
+	neigh[0]->set(neigh[0], &vall, sizeof(int));
 
-	    for ( k = 0; k < 4; k++)
-	      gls->add(gls, neigh[k], _GLIST_LEAF, NULL);
-	  }
-	/* BOUNDARIES of the Cartesian region */
-	if ( i == 0 )
-	  {
-	    GtypeInitBasic(&neigh[0], _GTYPE_INT);
-	    vall = ii + 1;
-	    neigh[0]->set(neigh[0], &vall, sizeof(int));
+	vall = (j == (ny-1) )?(-1):(ii + nx);
+	neigh[1]->set(neigh[1], &vall, sizeof(int));
 
-	    gls->add(gls, neigh[0], _GLIST_LEAF, NULL);
-	  }
+	vall = (i == 0)?(-1):(ii-1);
+	neigh[2]->set(neigh[2], &vall, sizeof(int));
 
-	if ( i == (nx-1) )
-	  {
-	    GtypeInitBasic(&neigh[2], _GTYPE_INT);
-	    vall = ii - 1;
-	    neigh[2]->set(neigh[2], &vall, sizeof(int));
+	vall = (j == 0)?(-1):(ii - nx);
+	neigh[3]->set(neigh[3], &vall, sizeof(int));
 
-	    gls->add(gls, neigh[2], _GLIST_LEAF, NULL);
-	  }
+	for ( k = 0; k < 4; k++)
+	  gls->add(gls, neigh[k], _GLIST_LEAF, NULL);
 
-	if ( j == 0 )
-	  {
-	    GtypeInitBasic(&neigh[1], _GTYPE_INT);
-	    vall = ii + nx;
-	    neigh[1]->set(neigh[1], &vall, sizeof(int));
-
-	    gls->add(gls, neigh[1], _GLIST_LEAF, NULL);
-	  }
-
-	if ( j == (ny-1) )
-	  {
-	    GtypeInitBasic(&neigh[3], _GTYPE_INT);
-	    vall = ii - nx;
-	    neigh[3]->set(neigh[3], &vall, sizeof(int));
-
-	    gls->add(gls, neigh[3], _GLIST_LEAF, NULL);
-	  }
 	/* next node */
 	ii++;
       }
