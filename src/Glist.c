@@ -127,10 +127,10 @@ int GlistDelete(Glist *lst)
       ptr0 = lst->first;
       do{
 
-	  ptr1 = ptr0;
+	  ptr1 = ptr0->nxt;
 	  GitemDelete(ptr0);
 
-	} while ( (ptr0 = ptr1->nxt) != NULL );
+	} while ( (ptr0 = ptr1) != NULL );
 
     }
 
@@ -240,17 +240,28 @@ void GitemDelete(Gitem *git)
 
   if ( git->tag != NULL)
     {
+#ifdef DEBUG_VERBOSE
+      GECHO("deleting the tag ...");
+#endif
       gls = (Glist *)git->tag;
       gls->del(gls);
     }
 
   if ( git->type == _GLIST_LEAF )
     {
+#ifdef DEBUG_VERBOSE
+      GECHO("deleting the leaf ...");
+#endif
+
       gtp = (Gtype *)git->opq;
       gtp->del(gtp);
     }
   else
     {
+#ifdef DEBUG_VERBOSE
+      GECHO("deleting the branch ...");
+#endif
+
       gls = (Glist *)git->opq;
       gls->del(gls);
     }

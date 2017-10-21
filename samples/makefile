@@ -11,7 +11,7 @@ VPATH = ./:../src:
 CC = cc
 # CC = icc
 INCS    = ../inc
-CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -O3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition 
+CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -O3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition -DDEBUG_VERBOSE 
 LIBS    = 
 LINKFLAGS    = -L$(LIBS) -I$(INCS)
 LINK_SUFFIX  = 
@@ -24,7 +24,7 @@ LINK_SUFFIX  =
 ### objects
 OBJ1 = Gtype.o GtypeTest.o 
 OBJ2 = Gtype.o Glist.o GlistTest.o
-OBJ3 = Gtype.o Glist.o Greorder.o GreorderTest.o
+OBJ3 = Gtype.o Glist.o Gcart.o Greorder.o GreorderTest.o
 ###
 
 ### compile and link

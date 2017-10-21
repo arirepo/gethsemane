@@ -7,5 +7,9 @@
   printf (mssg); \
   } while (0)
 
+#define GECHO(mssg) do { \
+  printf ("@ %s (%d): %s \n", __FILE__, __LINE__, mssg);\
+  fflush(stdout); \
+  } while(0)
 
 #endif
