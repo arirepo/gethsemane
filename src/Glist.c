@@ -271,10 +271,10 @@ void GitemDelete(Gitem *git)
 
 }
 
-long double GlistRank(Glist *lst)
+ double GlistRank(Glist *lst)
 {
-  /* return (long double)0.; */
-  long double rank;
+  /* return ( double)0.; */
+   double rank;
   Gitem *itr;
 
   for( rank = 0., itr = lst->first; itr != NULL; itr = itr->nxt)

@@ -162,36 +162,36 @@ void GtypePrintDouble(Gtype *inp)
 }
 
 
-long double GtypeRank(Gtype *inp)
+ double GtypeRank(Gtype *inp)
 {
 
-  return *(long double*)inp->opq;
+  return *( double*)inp->opq;
 
 }
 
-long double GtypeRankInt(Gtype *inp)
+ double GtypeRankInt(Gtype *inp)
 {
 
   int tmp;
   tmp = *(int *)inp->opq;
-  return (long double)tmp;
+  return ( double)tmp;
 
 }
 
-long double GtypeRankFloat(Gtype *inp)
+ double GtypeRankFloat(Gtype *inp)
 {
 
   float tmp;
   tmp = *(float *)inp->opq;
-  return (long double)tmp;
+  return ( double)tmp;
 
 }
 
-long double GtypeRankDouble(Gtype *inp)
+ double GtypeRankDouble(Gtype *inp)
 {
 
   double tmp;
   tmp = *(double *)inp->opq;
-  return (long double)tmp;
+  return ( double)tmp;
 
 }

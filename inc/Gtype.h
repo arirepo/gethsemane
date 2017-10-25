@@ -23,7 +23,7 @@ struct gen_class
   int   (*del)(struct gen_class *);
   void* (*set)(struct gen_class *, void *, size_t);
   void (*print)(struct gen_class *);
-  long double (*rank)(struct gen_class *);
+   double (*rank)(struct gen_class *);
 
 
   /* vtable - array of (void *) pointers to user-defined methods*/
@@ -68,10 +68,10 @@ void GtypePrintFloat(Gtype *inp);
 double *GtypeGetDouble(Gtype *inp);
 void GtypePrintDouble(Gtype *inp);
 
-long double GtypeRank(Gtype *inp);
-long double GtypeRankInt(Gtype *inp);
-long double GtypeRankFloat(Gtype *inp);
-long double GtypeRankDouble(Gtype *inp);
+ double GtypeRank(Gtype *inp);
+ double GtypeRankInt(Gtype *inp);
+ double GtypeRankFloat(Gtype *inp);
+ double GtypeRankDouble(Gtype *inp);
 
 #endif
 

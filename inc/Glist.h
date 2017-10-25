@@ -57,7 +57,7 @@ struct opq_list {
   void (*print)(struct opq_list*);
   int (*del)(struct opq_list* );
   int (*erase)(struct opq_list *, int);
-  long double (*rank)(struct opq_list *);
+   double (*rank)(struct opq_list *);
 };
 
 /* alias name for opq_list structure */ 
@@ -95,7 +95,7 @@ void GlistSort(Gitem **A, int len);
 /* returns the rank of current Glist 
 define your own specific procedure here ...
 */
-long double GlistRank(Glist *);
+ double GlistRank(Glist *);
 
 void GlistPrintItrs(Glist*);
 
