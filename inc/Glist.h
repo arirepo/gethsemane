@@ -1,6 +1,7 @@
 #ifndef _GLIST_
 #define _GLIST_
 #include <stdlib.h>
+#include "Gtype.h"
 
 
 /* basic datatypes used in Glist */
@@ -58,6 +59,8 @@ struct opq_list {
   int (*del)(struct opq_list* );
   int (*erase)(struct opq_list *, int);
    double (*rank)(struct opq_list *);
+  void (*find)(struct opq_list *, Gtype *, int , struct opq_list *);
+
 };
 
 /* alias name for opq_list structure */ 
@@ -97,6 +100,12 @@ define your own specific procedure here ...
 */
  double GlistRank(Glist *);
 
+/* prints the contents of the Glist based on the order of iterators
+   NOTE: sorting will affect this ordering ... */
 void GlistPrintItrs(Glist*);
+
+/* finds the first "num" instants of "val" in "lst" and put 
+   the results into "res" */
+void GlistFind(Glist *lst, Gtype *val, int num, Glist *res);
 
 #endif

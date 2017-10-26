@@ -28,6 +28,7 @@ int GlistInit(Glist** lst, void *top)
   (*lst)->del = GlistDelete;
   (*lst)->erase = GlistErase;
   (*lst)->rank = GlistRank;
+  (*lst)->find = GlistFind;
 
   return 0;
 
@@ -316,5 +317,27 @@ void GlistPrintItrs(Glist* lst)
 	}
     }
   printf(" } ");
+
+}
+
+void GlistFind(Glist *lst, Gtype *val, int num, Glist *res)
+{
+
+  Gitem *itr;
+  Gtype *gtp;
+
+
+  for (itr = lst->first; ((itr != NULL) && (res->size < num)); itr = itr->nxt)
+    if ( itr->type == _GLIST_LEAF )
+      {
+	if ( ((Gtype *)(itr->opq))->cmp((Gtype *)(itr->opq), val) == 0 )
+	  {
+	    GtypeInit(&gtp, sizeof(Gitem *));
+	    gtp->set(gtp, itr, sizeof(Gitem *));
+	    res->add(res, gtp, _GLIST_LEAF, NULL);
+	  }
+      }
+    else
+      ((Glist *)(itr->opq))->find(((Glist *)(itr->opq)), val, num, res);
 
 }

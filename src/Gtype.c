@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include "Gtype.h"
@@ -9,6 +10,7 @@ int GtypeInit(Gtype **inp, size_t nb)
 
   *inp = (Gtype *)malloc(sizeof(Gtype));
 
+  (*inp)->nb = nb;
   (*inp)->opq = (void *)malloc(nb);
 
   if ( (*inp)->opq == NULL ) return 1;
@@ -20,6 +22,7 @@ int GtypeInit(Gtype **inp, size_t nb)
   (*inp)->set = GtypeSet;
   (*inp)->print = GtypePrint;
   (*inp)->rank = GtypeRank;
+  (*inp)->cmp = GtypeCmp;
 
   /* setup  all other methods */
   (*inp)->vtable = NULL;
@@ -54,6 +57,8 @@ int GtypeDel(Gtype *inp)
 
 void *GtypeSet(Gtype *inp, void *val, size_t nb)
 {
+
+  inp->nb = nb;
   memcpy ( inp->opq, val, nb );
 
   return (void*)inp->opq;
@@ -75,6 +80,7 @@ int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ)
     {
     case     _GTYPE_INT:
  
+      (*inp)->nb = sizeof(int);
       (*inp)->opq = (int *)malloc(sizeof(int));
 
       /* setup foundation functions */
@@ -85,6 +91,7 @@ int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ)
       break;
     case     _GTYPE_FLOAT:
  
+      (*inp)->nb = sizeof(float);
       (*inp)->opq = (float *)malloc(sizeof(float));
 
       /* setup foundation functions */
@@ -95,6 +102,7 @@ int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ)
       break;
     case     _GTYPE_DOUBLE:
  
+      (*inp)->nb = sizeof(double);
       (*inp)->opq = (double *)malloc(sizeof(double));
 
       /* setup foundation functions */
@@ -111,6 +119,7 @@ int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ)
   /* the following are the same for all instances */
   (*inp)->del = GtypeDel;
   (*inp)->set = GtypeSet;
+  (*inp)->cmp = GtypeCmp;
 
   /* setup  all other methods */
   (*inp)->vtable = NULL;
@@ -193,5 +202,14 @@ void GtypePrintDouble(Gtype *inp)
   double tmp;
   tmp = *(double *)inp->opq;
   return ( double)tmp;
+
+}
+
+int GtypeCmp(Gtype *inp, Gtype *tp)
+{
+
+  assert( inp->nb == tp->nb );
+
+  return memcmp( inp->opq, tp->opq, inp->nb);
 
 }

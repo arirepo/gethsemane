@@ -16,6 +16,7 @@ typedef enum gtype_type _GTYPE_TYPE;
 struct gen_class
 {
   /* data part */
+  size_t nb; /*number of bytes in opaue data */
   void *opq;
 
   /* foundation methods */
@@ -24,6 +25,7 @@ struct gen_class
   void* (*set)(struct gen_class *, void *, size_t);
   void (*print)(struct gen_class *);
    double (*rank)(struct gen_class *);
+  int (*cmp)(struct gen_class *, struct gen_class *);
 
 
   /* vtable - array of (void *) pointers to user-defined methods*/
@@ -72,6 +74,8 @@ void GtypePrintDouble(Gtype *inp);
  double GtypeRankInt(Gtype *inp);
  double GtypeRankFloat(Gtype *inp);
  double GtypeRankDouble(Gtype *inp);
+
+int GtypeCmp(Gtype *inp, Gtype *tp);
 
 #endif
 
