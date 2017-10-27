@@ -32,16 +32,24 @@ int main(int argc, char *argv[])
   GlistInit(&fnds, NULL);
   verts->find(verts, gtp, 10, fnds);
 
-  fflush(stdout);
+  fnds->del(fnds);
+  GlistInit(&fnds, NULL);
+
+  /* for(ii = fnds->size; ii > 0; ii--) */
+  /*   fnds->erase(fnds, 0); */
+
+  verts->find(verts, gtp, 10, fnds);
+
 
   fnds->print(fnds);
+  fflush(stdout);
 
   /*reorder */
   GCuthillMcKee(verts, R, Q);
 
   /* clean ups */
-  verts->del(verts);
   fnds->del(fnds);
+  verts->del(verts);
   gtp->del(gtp);
 
   return 0;

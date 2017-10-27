@@ -42,12 +42,18 @@ void *GtypeGet(Gtype *inp)
 int GtypeDel(Gtype *inp)
 {
 
+  inp->nb = 0;
   free(inp->opq);
+  inp->opq = NULL;
 
   inp->get = NULL;
   inp->del = NULL;
-  inp->vtable = NULL;
+  inp->set = NULL;
+  inp->print = NULL;
   inp->rank = NULL;
+  inp->cmp = NULL;
+
+  inp->vtable = NULL;
 
   free(inp);
     

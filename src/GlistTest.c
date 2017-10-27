@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
   /* _GLIST(lst); */
   Gtype *inp, *inp2, *inp3, *inp4, *inp5;
   Glist *lst;
-  Gtype *tGtype;
 
   GtypeInit(&inp, sizeof(int));
   GtypeInit(&inp2, sizeof(int));

@@ -9,6 +9,8 @@
 int GlistInit(Glist** lst, void *top)
 {
 
+  int ii;
+
   *lst = (Glist *)malloc(sizeof(Glist));
 
   /*initializing the data */
@@ -17,6 +19,10 @@ int GlistInit(Glist** lst, void *top)
   (*lst)->last =  (Gitem *)NULL;
 
   (*lst)->itrs = (Gitem **)malloc(_DEFAULT_ITRS_SIZE_*sizeof(Gitem *));
+
+  for( ii = 0; ii < _DEFAULT_ITRS_SIZE_; ii++)
+    (*lst)->itrs[ii] = (Gitem *)NULL;
+
   (*lst)->itrs_buff_size = _DEFAULT_ITRS_SIZE_;
 
   /* setup the top Glist ; if any ... */
@@ -46,6 +52,7 @@ int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, void *tag)
   lst->last = (Gitem *) malloc( sizeof(Gitem) );
   if ( lst->last == NULL ) return 1; /* error code */
 
+  lst->last->tag = tag;
   lst->last->top = (void *)lst;
   if ( type == _GLIST_BRANCH )
     {
@@ -55,11 +62,12 @@ int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, void *tag)
 
   lst->last->type = type;
   lst->last->opq = opq;
-  lst->last->tag = tag;
 
   if ( lst->size == 0 ) /* if the list is currently empty */
     {
       lst->first = lst->last;
+      lst->first->nxt = NULL;
+      lst->first->prv = NULL;
       lst->size = 1;
     }
   else
@@ -120,8 +128,6 @@ void GlistPrint(Glist* lst)
 int GlistDelete(Glist *lst)
 {
   Gitem *ptr0, *ptr1;
-  Glist *gls;
-  Gtype *gtp;
 
   if ( lst->size )
     {
@@ -135,8 +141,23 @@ int GlistDelete(Glist *lst)
 
     }
 
+  lst->first = NULL;
+  lst->last  = NULL;
+
   if ( lst->itrs != NULL )
     free(lst->itrs);
+
+  lst->itrs = NULL;
+  lst->itrs_buff_size = 0;
+
+  lst->top = NULL;
+
+  lst->add = NULL;
+  lst->print = NULL;
+  lst->del = NULL;
+  lst->erase = NULL;
+  lst->rank = NULL;
+  lst->find = NULL;
 
   free(lst);
 
@@ -146,9 +167,7 @@ int GlistDelete(Glist *lst)
 int GlistErase(Glist *lst, int indx)
 {
   int i;
-  Gtype *tGtype;
   Gitem *cur;
-  Glist *gls;
 
   cur = lst->first;
   for ( i = 0; i < indx; i++)
@@ -248,6 +267,8 @@ void GitemDelete(Gitem *git)
       gls->del(gls);
     }
 
+  git->top = NULL;
+
   if ( git->type == _GLIST_LEAF )
     {
 #ifdef DEBUG_VERBOSE
@@ -267,8 +288,12 @@ void GitemDelete(Gitem *git)
       gls->del(gls);
     }
 
+  git->prv = NULL;
+  git->nxt = NULL;
 
   free(git);
+
+  git = NULL;
 
 }
 

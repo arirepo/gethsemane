@@ -5,6 +5,7 @@
 #define GERROR(mssg) do { \
   printf ("@ %s (%d): ", __FILE__, __LINE__); \
   printf (mssg); \
+  exit(1); \
   } while (0)
 
 #define GECHO(mssg) do { \
