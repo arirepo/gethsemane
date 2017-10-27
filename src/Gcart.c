@@ -48,7 +48,10 @@ int GcartGraph2d(Glist *lst, int nx, int ny)
 	neigh[3]->set(neigh[3], &vall, sizeof(int));
 
 	for ( k = 0; k < 4; k++)
-	  gls->add(gls, neigh[k], _GLIST_LEAF, NULL);
+	  if ( *((int *)neigh[k]->get(neigh[k])) == -1 ) /* wall */
+	    neigh[k]->del(neigh[k]);
+	  else
+	    gls->add(gls, neigh[k], _GLIST_LEAF, NULL);
 
 	/* next node */
 	ii++;
