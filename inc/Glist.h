@@ -8,7 +8,9 @@
 enum glist_type
   {
     _GLIST_BRANCH,
-    _GLIST_LEAF
+    _GLIST_LEAF,
+    _GLIST_INDEX_NO_SORT,
+    _GLIST_INDEX_SORTED
   };
 typedef enum glist_type _GLIST_TYPE;
 
@@ -17,7 +19,7 @@ struct opq_item {
 
   /* tag is the optional value of this node 
      it can also be another Glist as a tag!*/ 
-  void *tag;
+  Gtype *tag;
 
   /* can have another Glist as top (parrent) ... */
   void * top;
@@ -54,12 +56,16 @@ struct opq_list {
   void *top;
 
   /* methods */
-  int (*add)(struct opq_list* , void *, _GLIST_TYPE, void *);
+  int (*add)(struct opq_list* , void *, _GLIST_TYPE, Gtype *);
   void (*print)(struct opq_list*);
   int (*del)(struct opq_list* );
   int (*erase)(struct opq_list *, int);
    double (*rank)(struct opq_list *);
   void (*find)(struct opq_list *, Gtype *, int , struct opq_list *);
+  void (*refresh)(struct opq_list *);
+  void (*sort)(struct opq_list *);
+  Gitem* (*index)(struct opq_list *, int , _GLIST_TYPE );
+  struct opq_list* (*clone)(struct opq_list *, struct opq_list *);
 
 };
 
@@ -78,7 +84,7 @@ int GlistInit(Glist** lst, void *top);
 
 /* adds an opaque object to the opaque list
    on success return 0 else return the error code */
-int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, void *tag);
+int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, Gtype *tag);
 
 /* prints the components of the Glist struct */
 void GlistPrint(Glist* lst);
@@ -107,5 +113,20 @@ void GlistPrintItrs(Glist*);
 /* finds the first "num" instants of "val" in "lst" and put 
    the results into "res" */
 void GlistFind(Glist *lst, Gtype *val, int num, Glist *res);
+
+/* deletes and reinits a Glist */
+void GlistRefresh(Glist *lst);
+
+/* sorts the list based on the defined rank() function */
+void GlistSortMethod(Glist *lst);
+
+/* returns the Gitem located at "indx" of the Glist (zero-based)
+based on the given algorithm. If _GLIST_INDEX_SORTED then it returns
+the corresponding entry after sorting permutation otherwise it returns
+the initial unsorted configuration */
+Gitem *GlistIndex(Glist *lst, int indx, _GLIST_TYPE alg);
+
+/* clones a given Glist "that" into current Glist "this" */
+Glist *GlistClone(Glist *this, Glist *that);
 
 #endif

@@ -9,7 +9,7 @@
   } while (0)
 
 #define GECHO(mssg) do { \
-  printf ("@ %s (%d): %s \n", __FILE__, __LINE__, mssg);\
+  printf (" %s \n", mssg);\
   fflush(stdout); \
   } while(0)
 

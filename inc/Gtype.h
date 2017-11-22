@@ -26,7 +26,9 @@ struct gen_class
   void (*print)(struct gen_class *);
    double (*rank)(struct gen_class *);
   int (*cmp)(struct gen_class *, struct gen_class *);
-
+  int (*assign)(struct gen_class *, const struct gen_class *);
+  int (*clone)(struct gen_class *, const struct gen_class *);
+  int (*refresh)(struct gen_class *);
 
   /* vtable - array of (void *) pointers to user-defined methods*/
   /*                object holder     arguments                 */
@@ -76,6 +78,10 @@ void GtypePrintDouble(Gtype *inp);
  double GtypeRankDouble(Gtype *inp);
 
 int GtypeCmp(Gtype *inp, Gtype *tp);
+int GtypeAssign(Gtype *this, const Gtype *that);
+int GtypeClone(Gtype* this, const Gtype* that);
+
+int GtypeRefresh(Gtype *this);
 
 #endif
 

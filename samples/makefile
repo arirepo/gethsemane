@@ -9,12 +9,14 @@ VPATH = ./:../src:
 ###############################################
 ## NOTE!!! Now select your compiler from below 
 CC = cc
+#CC = pcc
 # CC = icc
 INCS    = ../inc
 # IS_DEBUG = -DDEBUG_VERBOSE
-CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -O3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition $(IS_DEBUG) 
+CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition $(IS_DEBUG) 
+# CCOMPILEFLAGS  =  -I$(INCS) -c -O2 $(IS_DEBUG) 
 LIBS    = 
-LINKFLAGS    = -L$(LIBS) -I$(INCS)
+# LINKFLAGS    = -L$(LIBS) -I$(INCS)
 LINK_SUFFIX  = 
 # LINK_SUFFIX  =     -llapack -lblas
 # OMP_FLAGS = -fopenmp

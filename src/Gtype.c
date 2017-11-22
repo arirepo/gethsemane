@@ -23,6 +23,10 @@ int GtypeInit(Gtype **inp, size_t nb)
   (*inp)->print = GtypePrint;
   (*inp)->rank = GtypeRank;
   (*inp)->cmp = GtypeCmp;
+  (*inp)->assign = GtypeAssign;
+  (*inp)->clone = GtypeClone;
+  (*inp)->refresh = GtypeRefresh;
+
 
   /* setup  all other methods */
   (*inp)->vtable = NULL;
@@ -52,11 +56,15 @@ int GtypeDel(Gtype *inp)
   inp->print = NULL;
   inp->rank = NULL;
   inp->cmp = NULL;
+  inp->assign = NULL;
+  inp->clone = NULL;
+  inp->refresh = NULL;
 
   inp->vtable = NULL;
 
   free(inp);
-    
+  
+  inp = NULL;  
 
   return 0;
 }
@@ -126,6 +134,9 @@ int GtypeInitBasic(Gtype **inp, _GTYPE_TYPE typ)
   (*inp)->del = GtypeDel;
   (*inp)->set = GtypeSet;
   (*inp)->cmp = GtypeCmp;
+  (*inp)->assign = GtypeAssign;
+  (*inp)->clone = GtypeClone;
+  (*inp)->refresh = GtypeRefresh;
 
   /* setup  all other methods */
   (*inp)->vtable = NULL;
@@ -218,4 +229,52 @@ int GtypeCmp(Gtype *inp, Gtype *tp)
 
   return memcmp( inp->opq, tp->opq, inp->nb);
 
+}
+
+int GtypeAssign(Gtype *this, const Gtype *that)
+{
+
+  assert(this->nb == that->nb);
+  this->set(this, that->opq, that->nb);
+
+  /* foundation methods */
+  this->get = that->get;
+  this->del = that->del;
+  this->set = that->set;
+  this->print = that->print;
+  this->rank = that->rank;
+  this->cmp = that->cmp;
+  this->assign = that->assign;
+  this->clone = that->clone;
+  this->refresh = that->refresh;
+
+  /* vtable - array of (void *) pointers to user-defined methods*/
+  /*                object holder     arguments                 */
+  this->vtable = that->vtable;
+
+
+  return 0;
+}
+
+int GtypeClone(Gtype* this, const Gtype* that)
+{
+ 
+  this->del(this);
+  GtypeInit(&this, that->nb);
+
+  this->assign(this, that);
+
+  return 0;
+}
+
+int GtypeRefresh(Gtype *this)
+{
+  size_t nb;
+
+  nb = this->nb;
+
+  this->del(this);
+  GtypeInit(&this, nb);
+
+  return 0;
 }

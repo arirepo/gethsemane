@@ -5,17 +5,17 @@
 #include "Genv.h"
 #include "Gtype.h"
 
-int main(int argc, char *argv[])
+int main(void)
 {
 
-  Glist *verts, *neigh, *R, *Q;
+  Glist *verts, *R;
   Glist *fnds;
   Gtype *gtp;
   int ii;
 
   GlistInit(&verts, NULL);
   /* creating a sample graph */
-  GcartGraph2d(verts, 3, 3);
+  GcartGraph2d(verts, 2, 2);
 
   GECHO("\n Before sort ... \n");
   verts->print(verts);
@@ -45,12 +45,15 @@ int main(int argc, char *argv[])
   fflush(stdout);
 
   /*reorder */
-  GCuthillMcKee(verts, R, Q);
+  GlistInit(&R, NULL);
+  GCuthillMcKee(verts, R);
+  R->print(R);
 
   /* clean ups */
   fnds->del(fnds);
   verts->del(verts);
   gtp->del(gtp);
+  R->del(R);
 
   return 0;
 }

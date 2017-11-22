@@ -35,6 +35,10 @@ int GlistInit(Glist** lst, void *top)
   (*lst)->erase = GlistErase;
   (*lst)->rank = GlistRank;
   (*lst)->find = GlistFind;
+  (*lst)->refresh = GlistRefresh;
+  (*lst)->sort = GlistSortMethod;
+  (*lst)->index = GlistIndex;
+  (*lst)->clone = GlistClone;
 
   return 0;
 
@@ -42,7 +46,7 @@ int GlistInit(Glist** lst, void *top)
 
 
  
-int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, void *tag)
+int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, Gtype *tag)
 {
 
   Gitem *tail;
@@ -103,10 +107,10 @@ void GlistPrint(Glist* lst)
   for(ptr = lst->first; itr-- > 0; ptr = ptr->nxt)
     {
       /* printing the tag ; if any ... */
-      if ( (gls = (Glist *)ptr->tag) != NULL)
+      if ( (gtp = (Gtype *)ptr->tag) != NULL)
 	{
 	  printf(" tag = ");
-	  gls->print(gls);
+	  gtp->print(gtp);
 	  printf(" , ");
 	}
 
@@ -158,8 +162,13 @@ int GlistDelete(Glist *lst)
   lst->erase = NULL;
   lst->rank = NULL;
   lst->find = NULL;
+  lst->refresh = NULL;
+  lst->sort = NULL;
+  lst->index = NULL;
+  lst->clone = NULL;
 
   free(lst);
+  lst = NULL;
 
   return 0;
 }
@@ -263,8 +272,8 @@ void GitemDelete(Gitem *git)
 #ifdef DEBUG_VERBOSE
       GECHO("deleting the tag ...");
 #endif
-      gls = (Glist *)git->tag;
-      gls->del(gls);
+      gtp = (Gtype *)git->tag;
+      gtp->del(gtp);
     }
 
   git->top = NULL;
@@ -323,10 +332,10 @@ void GlistPrintItrs(Glist* lst)
       ptr = lst->itrs[itr];
 
       /* printing the tag ; if any ... */
-      if ( (gls = (Glist *)ptr->tag) != NULL)
+      if ( (gtp = (Gtype *)ptr->tag) != NULL)
 	{
 	  printf(" tag = ");
-	  gls->print(gls);
+	  gtp->print(gtp);
 	  printf(" , ");
 	}
 
@@ -365,4 +374,114 @@ void GlistFind(Glist *lst, Gtype *val, int num, Glist *res)
     else
       ((Glist *)(itr->opq))->find(((Glist *)(itr->opq)), val, num, res);
 
+}
+
+void GlistRefresh(Glist *lst)
+{
+  void *topp;
+  topp = NULL;
+
+  topp = lst->top;
+  lst->del(lst);
+  GlistInit(&lst, topp);
+
+}
+
+void GlistSortMethod(Glist *lst)
+{
+
+  GlistSort(lst->itrs, lst->size);
+
+}
+
+Gitem *GlistIndex(Glist *lst, int indx, _GLIST_TYPE alg)
+{
+
+  int i;
+  Gitem *res;
+  res = NULL;
+
+  switch ( alg )
+    {
+    case _GLIST_INDEX_NO_SORT:
+      for ( i= 0 , res = lst->first; ((res != NULL) && (i < indx)); i++, res = res->nxt);
+
+      break;
+    case _GLIST_INDEX_SORTED:
+
+      res = lst->itrs[indx];
+
+      break;
+    default:
+
+      GERROR("\n Unknown indexing algorithm! \n");
+
+    }
+
+  return res;
+
+}
+
+Glist *GlistClone(Glist *this, Glist *that)
+{
+
+  Gtype *gtp, *ttag;
+  Gitem *git;
+  Glist *gls;
+
+  this->del(this);
+  GlistInit(&this, that->top);
+
+  gtp = NULL;
+  ttag = NULL;
+  gls = NULL;
+  GlistInit(&gls, NULL);
+
+
+  for( git = that->first; git != NULL; git = git->nxt)
+    {
+
+      if ( git->tag != NULL )
+	{ 
+
+	  GtypeInit(&ttag, git->tag->nb);
+	  ttag->assign(ttag, git->tag);
+	}	
+
+      switch ( git->type )
+	{ 
+	case _GLIST_BRANCH:
+
+	  gls->clone(gls, (Glist *)git->opq);
+	  this->add(this, gls, _GLIST_BRANCH, ttag);
+	  break;
+
+	case _GLIST_LEAF:
+
+	  GtypeInit(&gtp, ((Gtype *)git->opq)->nb);
+	  gtp->assign(gtp, (Gtype *)git->opq);
+	  this->add(this, gtp, _GLIST_LEAF, ttag);
+	  break;
+
+	default:
+
+	  GERROR("\n Unknown GLIST TYPE, must be either BRANCH or LEAF \n");
+
+	}
+
+    }
+
+  /* cloning the methods */
+  this->add     = that->add;
+  this->print   = that->print;
+  this->del     = that->del;
+  this->erase   = that->erase;
+  this->rank    = that->rank;
+  this->find    = that->find;
+  this->refresh = that->refresh;
+  this->sort    = that->sort;
+  this->index   = that->index;
+  this->clone   = that->clone;
+
+  return this;
 }

@@ -10,7 +10,8 @@ int GcartGraph2d(Glist *lst, int nx, int ny)
   int i, j, ii, k;
   int vall;
   Glist *gls;
-  Gtype **neigh;
+  Gtype **neigh, *ttag;
+
 
   neigh = (Gtype **)malloc(4 * sizeof(Gtype *));
 
@@ -18,10 +19,14 @@ int GcartGraph2d(Glist *lst, int nx, int ny)
   assert( (nx > 1) && (ny > 1) );
 
   /* add nodes to the list */
+  ii = 0;
   for(i=0; i < (nx*ny); i++)
     {
       GlistInit(&gls, lst);
-      lst->add(lst, gls, _GLIST_BRANCH, NULL);
+      GtypeInitBasic(&ttag, _GTYPE_INT);
+      ttag->set(ttag, &ii, sizeof(int));
+      lst->add(lst, gls, _GLIST_BRANCH, ttag);
+      ii++;
     }
 
   ii = 0; /* first node number */
@@ -51,7 +56,12 @@ int GcartGraph2d(Glist *lst, int nx, int ny)
 	  if ( *((int *)neigh[k]->get(neigh[k])) == -1 ) /* wall */
 	    neigh[k]->del(neigh[k]);
 	  else
-	    gls->add(gls, neigh[k], _GLIST_LEAF, NULL);
+	    {
+	      GtypeInitBasic(&ttag, _GTYPE_INT);
+	      ttag->set(ttag, &ii, sizeof(int));
+
+	      gls->add(gls, neigh[k], _GLIST_LEAF, ttag);
+	    }
 
 	/* next node */
 	ii++;
