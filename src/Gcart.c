@@ -15,8 +15,8 @@ int GcartGraph2d(Glist *lst, int nx, int ny)
 
   neigh = (Gtype **)malloc(4 * sizeof(Gtype *));
 
-  /* check the min size of the network */
-  assert( (nx > 1) && (ny > 1) );
+  /* /\* check the min size of the network *\/ */
+  /* assert( (nx > 1) && (ny > 1) ); */
 
   /* add nodes to the list */
   ii = 0;

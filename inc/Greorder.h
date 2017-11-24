@@ -6,7 +6,7 @@
 /* implements the Cuthill - McKee algorithm
    for a graph represented by the connectivity matrix 
    stored in the Glist format*/ 
-int GCuthillMcKee(Glist *verts, Glist *R);
+Glist *GCuthillMcKee(Glist *verts, Glist *R);
 
 
 #endif

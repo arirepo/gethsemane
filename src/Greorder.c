@@ -3,7 +3,7 @@
 #include "Greorder.h"
 #include "Glist.h"
 
-int GCuthillMcKee(Glist *verts, Glist *R)
+Glist *GCuthillMcKee(Glist *verts, Glist *R)
 {
 
   int i, itr, Pfound;
@@ -12,7 +12,7 @@ int GCuthillMcKee(Glist *verts, Glist *R)
   Glist *Q, *inR, *nPdeg;
 
   /* resetting the output list */
-  R->refresh(R);
+  R = R->refresh(R);
   GlistInit(&Q, NULL);
   GlistInit(&inR, NULL);
   GlistInit(&nPdeg, NULL);
@@ -22,10 +22,10 @@ int GCuthillMcKee(Glist *verts, Glist *R)
 
   /* get tag which is the vertex number (ZERO-BASED) */
   GtypeInitBasic(&P, _GTYPE_INT);
-  P->clone(P, verts->first->tag);
+  P = P->clone(P, verts->first->tag);
 
   /* continue creating the queue and adding eligible nodes to R */  
-  for ( Q->refresh(Q), itr = 0; (Q->size || (itr == 0) ); ((itr)?Q->erase(Q,0):0), itr++)
+  for ( Q = Q->refresh(Q), itr = 0; (Q->size || (itr == 0) ); ((itr)?Q->erase(Q,0):0), itr++)
     {
 
       if ( itr ) /* check to see if P is already in R */
@@ -33,7 +33,7 @@ int GCuthillMcKee(Glist *verts, Glist *R)
 	  GtypeInitBasic(&P, _GTYPE_INT);
 	  P->assign(P, (Gtype *)(Q->first->opq));
 	  /* P->assign(P, (Gtype *)(Q->first->opq)); */
-	  inR->refresh(inR);
+	  inR = inR->refresh(inR);
 	  R->find(R, P, 1, inR);
 	  Pfound = (inR->size) ? 1 : 0;
 	}
@@ -46,7 +46,7 @@ int GCuthillMcKee(Glist *verts, Glist *R)
 	  /* sort and add neighbors of P to Q */
 	  /* find the Gitem of the P node in the original (unsorted) vertices-list */
 	  git = verts->index(verts, *((int *)P->get(P)), _GLIST_INDEX_NO_SORT);
-	  nPdeg->clone(nPdeg, (Glist *)git->opq);
+	  nPdeg = nPdeg->clone(nPdeg, (Glist *)git->opq);
 
 	  /* finding the degrees of each neighboring node, then set: 
 	     tag = node number of that neighbor
@@ -80,7 +80,7 @@ int GCuthillMcKee(Glist *verts, Glist *R)
   inR->del(inR);
   nPdeg->del(nPdeg);
 
-  return 0;
+  return R;
 
 }
 

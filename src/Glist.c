@@ -376,7 +376,7 @@ void GlistFind(Glist *lst, Gtype *val, int num, Glist *res)
 
 }
 
-void GlistRefresh(Glist *lst)
+Glist* GlistRefresh(Glist *lst)
 {
   void *topp;
   topp = NULL;
@@ -384,6 +384,8 @@ void GlistRefresh(Glist *lst)
   topp = lst->top;
   lst->del(lst);
   GlistInit(&lst, topp);
+
+  return lst;
 
 }
 
@@ -452,7 +454,7 @@ Glist *GlistClone(Glist *this, Glist *that)
 	{ 
 	case _GLIST_BRANCH:
 
-	  gls->clone(gls, (Glist *)git->opq);
+	  gls = gls->clone(gls, (Glist *)git->opq);
 	  this->add(this, gls, _GLIST_BRANCH, ttag);
 	  break;
 

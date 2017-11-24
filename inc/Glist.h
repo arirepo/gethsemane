@@ -62,7 +62,7 @@ struct opq_list {
   int (*erase)(struct opq_list *, int);
    double (*rank)(struct opq_list *);
   void (*find)(struct opq_list *, Gtype *, int , struct opq_list *);
-  void (*refresh)(struct opq_list *);
+  struct opq_list* (*refresh)(struct opq_list *);
   void (*sort)(struct opq_list *);
   Gitem* (*index)(struct opq_list *, int , _GLIST_TYPE );
   struct opq_list* (*clone)(struct opq_list *, struct opq_list *);
@@ -115,7 +115,7 @@ void GlistPrintItrs(Glist*);
 void GlistFind(Glist *lst, Gtype *val, int num, Glist *res);
 
 /* deletes and reinits a Glist */
-void GlistRefresh(Glist *lst);
+Glist *GlistRefresh(Glist *lst);
 
 /* sorts the list based on the defined rank() function */
 void GlistSortMethod(Glist *lst);

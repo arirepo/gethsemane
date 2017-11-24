@@ -256,7 +256,7 @@ int GtypeAssign(Gtype *this, const Gtype *that)
   return 0;
 }
 
-int GtypeClone(Gtype* this, const Gtype* that)
+Gtype *GtypeClone(Gtype* this, const Gtype* that)
 {
  
   this->del(this);
@@ -264,10 +264,10 @@ int GtypeClone(Gtype* this, const Gtype* that)
 
   this->assign(this, that);
 
-  return 0;
+  return this;
 }
 
-int GtypeRefresh(Gtype *this)
+Gtype *GtypeRefresh(Gtype *this)
 {
   size_t nb;
 
@@ -276,5 +276,5 @@ int GtypeRefresh(Gtype *this)
   this->del(this);
   GtypeInit(&this, nb);
 
-  return 0;
+  return this;
 }

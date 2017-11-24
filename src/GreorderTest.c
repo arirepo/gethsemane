@@ -15,44 +15,44 @@ int main(void)
 
   GlistInit(&verts, NULL);
   /* creating a sample graph */
-  GcartGraph2d(verts, 2, 2);
+  GcartGraph2d(verts, 20, 20);
 
-  GECHO("\n Before sort ... \n");
-  verts->print(verts);
+  /* GECHO("\n Before sort ... \n"); */
+  /* verts->print(verts); */
 
-  GlistSort(verts->itrs, verts->size);
+  /* GlistSort(verts->itrs, verts->size); */
 
-  GECHO("\n After sort ... \n");
-  verts->print(verts);
+  /* GECHO("\n After sort ... \n"); */
+  /* verts->print(verts); */
 
-  ii = 4;
-  GtypeInitBasic(&gtp, _GTYPE_INT);
-  gtp->set(gtp, &ii, sizeof(int));
+  /* ii = 4; */
+  /* GtypeInitBasic(&gtp, _GTYPE_INT); */
+  /* gtp->set(gtp, &ii, sizeof(int)); */
 
-  GlistInit(&fnds, NULL);
-  verts->find(verts, gtp, 10, fnds);
+  /* GlistInit(&fnds, NULL); */
+  /* verts->find(verts, gtp, 10, fnds); */
 
-  fnds->del(fnds);
-  GlistInit(&fnds, NULL);
+  /* fnds->del(fnds); */
+  /* GlistInit(&fnds, NULL); */
 
-  /* for(ii = fnds->size; ii > 0; ii--) */
-  /*   fnds->erase(fnds, 0); */
+  /* /\* for(ii = fnds->size; ii > 0; ii--) *\/ */
+  /* /\*   fnds->erase(fnds, 0); *\/ */
 
-  verts->find(verts, gtp, 10, fnds);
+  /* verts->find(verts, gtp, 10, fnds); */
 
 
-  fnds->print(fnds);
-  fflush(stdout);
+  /* fnds->print(fnds); */
+  /* fflush(stdout); */
 
   /*reorder */
   GlistInit(&R, NULL);
-  GCuthillMcKee(verts, R);
+  R = GCuthillMcKee(verts, R);
   R->print(R);
 
   /* clean ups */
-  fnds->del(fnds);
+  /* fnds->del(fnds); */
   verts->del(verts);
-  gtp->del(gtp);
+  /* gtp->del(gtp); */
   R->del(R);
 
   return 0;
