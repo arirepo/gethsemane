@@ -67,6 +67,8 @@ int GlistAdd(Glist* lst, void *opq, _GLIST_TYPE type, Gtype *tag)
   lst->last->type = type;
   lst->last->opq = opq;
 
+  lst->last->nxt = NULL;
+
   if ( lst->size == 0 ) /* if the list is currently empty */
     {
       lst->first = lst->last;
@@ -424,7 +426,7 @@ Gitem *GlistIndex(Glist *lst, int indx, _GLIST_TYPE alg)
 
 }
 
-Glist *GlistClone(Glist *this, Glist *that)
+Glist *GlistClone(Glist *this, const Glist *that)
 {
 
   Gtype *gtp, *ttag;
@@ -437,8 +439,6 @@ Glist *GlistClone(Glist *this, Glist *that)
   gtp = NULL;
   ttag = NULL;
   gls = NULL;
-  GlistInit(&gls, NULL);
-
 
   for( git = that->first; git != NULL; git = git->nxt)
     {
@@ -454,6 +454,7 @@ Glist *GlistClone(Glist *this, Glist *that)
 	{ 
 	case _GLIST_BRANCH:
 
+	  GlistInit(&gls, NULL);
 	  gls = gls->clone(gls, (Glist *)git->opq);
 	  this->add(this, gls, _GLIST_BRANCH, ttag);
 	  break;

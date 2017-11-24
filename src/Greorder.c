@@ -73,6 +73,10 @@ Glist *GCuthillMcKee(Glist *verts, Glist *R)
 	    }
 
 	}
+      else
+	{
+	  P->del(P);
+	}
     }
 
   /* clean ups */

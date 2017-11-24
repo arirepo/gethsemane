@@ -13,7 +13,7 @@ CC = cc
 # CC = icc
 INCS    = ../inc
 # IS_DEBUG = -DDEBUG_VERBOSE
-# CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition $(IS_DEBUG) 
+# CCOMPILEFLAGS  =  -I$(INCS) -c -Wall -g3 -Wextra -std=c89 -pedantic -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition $(IS_DEBUG) 
 CCOMPILEFLAGS  =  -I$(INCS) -c -O3 $(IS_DEBUG) 
 LIBS    = 
 # LINKFLAGS    = -L$(LIBS) -I$(INCS)

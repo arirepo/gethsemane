@@ -15,7 +15,7 @@ int main(void)
 
   GlistInit(&verts, NULL);
   /* creating a sample graph */
-  GcartGraph2d(verts, 20, 20);
+  GcartGraph2d(verts, 100, 100);
 
   /* GECHO("\n Before sort ... \n"); */
   /* verts->print(verts); */

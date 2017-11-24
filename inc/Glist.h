@@ -65,7 +65,7 @@ struct opq_list {
   struct opq_list* (*refresh)(struct opq_list *);
   void (*sort)(struct opq_list *);
   Gitem* (*index)(struct opq_list *, int , _GLIST_TYPE );
-  struct opq_list* (*clone)(struct opq_list *, struct opq_list *);
+  struct opq_list* (*clone)(struct opq_list *, const struct opq_list *);
 
 };
 
@@ -127,6 +127,6 @@ the initial unsorted configuration */
 Gitem *GlistIndex(Glist *lst, int indx, _GLIST_TYPE alg);
 
 /* clones a given Glist "that" into current Glist "this" */
-Glist *GlistClone(Glist *this, Glist *that);
+Glist *GlistClone(Glist *this, const Glist *that);
 
 #endif
